@@ -4,9 +4,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<{
-    data: API.CurrentUser;
-  }>('/api/currentUser', {
+  return request<API.Result<API.UserInfo>>(/*'/api/currentUser'*/'/api/auth/me', {
     method: 'GET',
     ...(options || {}),
   });
@@ -14,7 +12,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 
 /** 退出登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<API.Result<null>>(/* '/api/login/outLogin' */'/api/auth/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -22,7 +20,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.Result<API.LoginResult>>(/* '/api/login/account' */ '/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,13 +30,22 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 
+export async function refresh(
+  options?: { [key: string]: any },
+) {
+  return request<API.Result<API.LoginResult>>('/api/auth/refresh', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
-export async function getNotices(options?: { [key: string]: any }) {
+/* export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {
     method: 'GET',
     ...(options || {}),
   });
-}
+} */
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(

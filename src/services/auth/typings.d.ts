@@ -23,10 +23,32 @@ declare namespace API {
     phone?: string;
   };
 
+  /** 后端统一返回值 */
+  type Result<T = unknown> = {
+    code: number;
+    msg: string | null;
+    data: T | null;
+    errorCode: string | null;
+    errorMsg: string | null;
+  };
+
   type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+    access_token: string;
+    refresh_token: string;
+    token_type: string;
+    expires_in: number;
+    refresh_expires_in: number;
+    user_info: UserInfo;
+    permissions: string[];
+  };
+
+  type UserInfo = {
+    id: number;
+    username: string;
+    nickname: string;
+    status: number;
+    roles: string[];
+    avatar?: string;
   };
 
   type PageParams = {
@@ -98,4 +120,5 @@ declare namespace API {
     description?: string;
     type?: NoticeIconItemType;
   };
+
 }
