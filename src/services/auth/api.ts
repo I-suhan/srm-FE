@@ -4,7 +4,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.Result<API.UserInfo>>(/*'/api/currentUser'*/'/api/auth/me', {
+  return request<API.Result<API.CurrentUser>>(/*'/api/currentUser'*/'/api/auth/me', {
     method: 'GET',
     ...(options || {}),
   });
@@ -30,11 +30,19 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 
-export async function refresh(
+export async function refreshToken(
+  refreshTokenValue: string,
   options?: { [key: string]: any },
 ) {
-  return request<API.Result<API.LoginResult>>('/api/auth/refresh', {
+  return request<API.Result<API.LoginResult>>('api/auth/refresh', {
     method: 'POST',
+    params: {
+      refreshToken: refreshTokenValue,
+    },
+
+
+    // refresh 自己失败时不要再次进入统一 errorHandler
+    skipErrorHandler: true,
     ...(options || {}),
   });
 }

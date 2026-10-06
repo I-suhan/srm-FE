@@ -42,7 +42,7 @@ declare namespace API {
     permissions: string[];
   };
 
-  type UserInfo = {
+  type CurrentUser = {
     id: number;
     username: string;
     nickname: string;

@@ -8,6 +8,7 @@ import type { MenuProps } from 'antd';
 import { Spin } from 'antd';
 import React, { startTransition } from 'react';
 import { outLogin } from '@/services/auth/api';
+import { clearTokens } from '@/utils/auth';
 import HeaderDropdown from '../HeaderDropdown';
 
 type GlobalHeaderRightProps = {
@@ -38,15 +39,23 @@ const menuItems: MenuProps['items'] = [
 const loginOut = async () => {
   try {
     await outLogin();
+    clearTokens();
   } catch {
-    // Local logout has already cleared user state; redirect should still proceed.
+    // 即使后端退出失败，也继续执行本地退出
   }
+
+  clearTokens();
+
   const { search, pathname } = window.location;
+
   const urlParams = new URL(window.location.href).searchParams;
+
   const searchParams = new URLSearchParams({
     redirect: pathname + search,
   });
+
   const redirect = urlParams.get('redirect');
+
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
       pathname: '/user/login',

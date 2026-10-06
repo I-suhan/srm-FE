@@ -1,11 +1,16 @@
 import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
+import type {
+  RequestConfig,
+  RequestOptions,
+  RunTimeLayoutConfig,
+} from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
+import { getAccessToken } from '@/utils/auth';
 
 // Initialize dayjs plugins globally
 dayjs.extend(relativeTime);
@@ -38,10 +43,8 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser({
-        skipErrorHandler: true,
-      });
-      return msg.data;
+      const msg = await queryCurrentUser();
+      return msg.data ?? undefined;
     } catch (_error) {
       const { pathname, search, hash } = history.location;
       history.replace(
@@ -50,6 +53,7 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+
   // 如果不是登录页面，执行
   const { location } = history;
   if (
@@ -192,6 +196,23 @@ export const layout: RunTimeLayoutConfig = ({
 export const request: RequestConfig = {
   baseURL: '',
   ...errorConfig,
+
+  requestInterceptors: [
+    (config: RequestOptions) => {
+      const accessToken = getAccessToken();
+
+      if (accessToken) {
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${accessToken}`,
+        };
+      }
+
+      return config;
+    },
+  ],
+
+  responseInterceptors: [],
 };
 
 export function rootContainer(container: React.ReactNode) {
