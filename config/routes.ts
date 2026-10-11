@@ -50,6 +50,12 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/srm',
+    name: 'srm',
+    icon: 'shop',
+    component: './srm',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
